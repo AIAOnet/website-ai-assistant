@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local widget test website</title>
+<style>
+body{font:17px/1.6 system-ui,sans-serif;margin:0;background:#f2f5f7;color:#192b35}main{max-width:760px;margin:56px auto;padding:32px;background:white;border-radius:18px;border:1px solid #dce5ea}h1{line-height:1.2}p{color:#455966}label{display:block;margin:16px 0}input,select,button{box-sizing:border-box;font:inherit;padding:10px 14px;border:1px solid #a8bbc5;border-radius:7px}input{display:block;width:100%;margin-top:6px}button{background:#164b62;color:white;cursor:pointer}button:disabled{opacity:.6}[role=status]{margin-top:24px;white-space:pre-wrap}a{color:#126082}@media(max-width:800px){main{margin:20px;padding:24px}}
+</style></head><body><main><p>LOCAL INTEGRATION TEST</p><h1>A separate website.<br>The same assistant.</h1><p>This page embeds the assistant using the code from Website Integration. Ask about the website knowledge already loaded in your assistant.</p>
+<section id="website-widget" aria-label="Website assistant">
+  <p>Independent concept demo. Do not enter personal or sensitive information.</p>
+  <form><label>Question <input name="question" required maxlength="500"></label>
+    <label>Language <select name="language"><option value="en">English</option><option value="sv">Swedish</option></select></label>
+    <button type="submit">Ask</button></form>
+  <div role="status" aria-live="polite"></div>
+</section>
+<script>
+(() => {
+  const root = document.getElementById("website-widget");
+  const form = root.querySelector("form"), output = root.querySelector('[role="status"]');
+  const conversationId = "widget-" + crypto.randomUUID();
+  const apiBase = "http://127.0.0.1:8001";
+  let visitor = null;
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    const message = form.elements.question.value.trim();
+    if (!message) return;
+    const language = form.elements.language.value;
+    const button = form.querySelector("button");
+    button.disabled = true;
+    output.textContent = language === "sv" ? "Laddar…" : "Loading…";
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 90000);
+    try {
+      if (!visitor || visitor.expires_at * 1000 < Date.now() + 60000) {
+        const headers = visitor && visitor.expires_at * 1000 > Date.now()
+          ? {Authorization: "Bearer " + visitor.token} : {};
+        const session = await fetch(apiBase + "/api/widget/session", {
+          method: "POST", credentials: "omit", signal: controller.signal, headers
+        });
+        if (!session.ok) { visitor = null; throw new Error("Session unavailable"); }
+        visitor = await session.json();
+      }
+      const response = await fetch(apiBase + "/api/widget/chat", {
+        method: "POST", credentials: "omit", signal: controller.signal,
+        headers: {"Content-Type": "application/json", Authorization: "Bearer " + visitor.token},
+        body: JSON.stringify({conversation_id: conversationId, message, language})
+      });
+      if (!response.ok) { if (response.status === 401) visitor = null; throw new Error("Request failed"); }
+      const data = await response.json();
+      output.textContent = data.answer;
+      const mode = document.createElement("p");
+      const labels = language === "sv"
+        ? {llm: "LLM-svar", fallback: "Källbaserat reservsvar", deterministic: "Verktygssvar"}
+        : {llm: "LLM answer", fallback: "Source-based fallback", deterministic: "Tool response"};
+      mode.textContent = labels[data.generation] || "";
+      output.append(mode);
+      for (const source of data.sources || []) {
+        const url = new URL(source.url);
+        if (!["https:", "http:"].includes(url.protocol)) continue;
+        const link = document.createElement("a");
+        link.href = url.href; link.textContent = source.title;
+        link.target = "_blank"; link.rel = "noopener noreferrer";
+        output.append(link, document.createElement("br"));
+      }
+    } catch {
+      output.textContent = language === "sv"
+        ? "Assistenten kunde inte nås. Försök igen."
+        : "The assistant could not be reached. Please try again.";
+    } finally { clearTimeout(timeout); button.disabled = false; }
+  });
+})();
+</script>
+</main></body></html>

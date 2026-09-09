@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administration · Website Assistant</title><link rel="stylesheet" href="/assets/styles.css"><script src="/assets/admin.js" defer></script></head>
+<body><main><header><p class="eyebrow">ADMINISTRATION</p><a href="/">Assistant</a></header><h1>Website knowledge</h1>
+<p id="status" role="status">Sign in to inspect your knowledge and ontology.</p>
+<form id="login"><label for="username">Username</label><input id="username" autocomplete="username" maxlength="100" required>
+<label for="password">Password</label><input id="password" type="password" autocomplete="current-password" maxlength="256" required><button>Sign in</button></form>
+<section id="overview" hidden><h2>Current knowledge</h2><p id="summary"></p>
+<p>Valid builds can become the assistant's knowledge automatically. Builds with reduced coverage stay available for review.</p>
+<h2>Knowledge versions</h2><p id="version-status" role="status"></p><button id="reload-versions">Refresh versions</button><div id="version-list"></div>
+<form id="discovery-form" hidden><h2>Discover a website</h2><label for="homepage">Homepage URL</label><input id="homepage" type="url" required maxlength="2048" placeholder="https://example.com/">
+<details><summary>Discovery limits</summary><label for="crawl-pages">Maximum pages</label><input id="crawl-pages" type="number" min="1" max="1000" value="200" required>
+<label for="crawl-depth">Link depth</label><input id="crawl-depth" type="number" min="0" max="10" value="4" required></details>
+<button id="start-discovery">Start discovery</button></form>
+<h2>Discovery jobs</h2><p id="discovery-status" role="status"></p><button id="reload-jobs">Refresh jobs</button><div id="job-list"></div><div id="job-report"></div>
+<h2>Answer provider</h2><p id="provider-summary"></p>
+<p>Provider settings are loaded from the local configuration file. Restart after changing them.</p>
+<button id="probe" hidden>Test connection</button><p id="probe-result" role="status"></p>
+<h2>Routing rules</h2><p>Rules match literal words or phrases. Lower priority numbers run first. Contact and booking actions remain disabled.</p>
+<button id="reload-rules">Reload rules</button><p id="routing-status" role="status"></p><div id="rule-list"></div>
+<form id="rule-editor" hidden><h3>Create or edit a rule</h3>
+<label for="rule-id">Rule ID</label><input id="rule-id" required maxlength="60" pattern="[A-Za-z0-9_-]+">
+<label for="rule-name">Name</label><input id="rule-name" required maxlength="100">
+<label for="rule-phrases">Phrases, one per line</label><textarea id="rule-phrases" required rows="3" maxlength="2024"></textarea>
+<label for="rule-intent">Route</label><select id="rule-intent"><option value="information">All website knowledge</option><option value="product">Products</option><option value="service">Services</option><option value="company">Company</option><option value="out_of_scope">Outside scope</option></select>
+<label for="rule-language">Language</label><select id="rule-language"><option value="all">Both languages</option><option value="en">English</option><option value="sv">Swedish</option></select>
+<label for="rule-priority">Priority</label><input id="rule-priority" type="number" min="1" max="1000" value="100" required>
+<label><input id="rule-enabled" type="checkbox" checked> Enabled</label>
+<label><input id="rule-confirmed" type="checkbox" required> Apply this change to new chat requests</label>
+<button id="save-rule">Create rule</button><button id="new-rule" type="button">Clear / new rule</button></form>
+<form id="route-preview" hidden><h3>Preview routing</h3><label for="preview-phrase">Question</label><input id="preview-phrase" required maxlength="500">
+<label for="preview-language">Language</label><select id="preview-language"><option value="en">English</option><option value="sv">Swedish</option></select><button>Preview</button></form>
+<button id="logout">Sign out</button></section>
+</main></body></html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Website Assistant — Confidential Concept Demo</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/appointment.css">
+  <link rel="stylesheet" href="/assets/launcher.css">
+  <link rel="stylesheet" href="/assets/header.css">
+  <style>.chat-launcher[hidden]{display:none}</style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="#">WEBSITE <span>ASSISTANT</span></a>
+    <nav aria-label="Huvudmeny"><a href="#solutions" data-i18n="navSolutions">Lösningar</a><a href="#about" data-i18n="navAbout">Om demonstrationen</a></nav>
+    <div class="header-actions"><a class="admin-link" href="/admin">Admin</a><div class="language" aria-label="Language"><button type="button" class="active" data-lang="sv" aria-pressed="true">SV</button><span aria-hidden="true">/</span><button type="button" data-lang="en" aria-pressed="false">EN</button></div></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">WEBSITE KNOWLEDGE</p>
+        <h1 data-i18n="headline">Rätt kunskap börjar med rätt källa.</h1>
+        <p class="lead" data-i18n="lead">Utforska webbplatsens innehåll med svar förankrade i publicerade källor.</p>
+        <button class="primary" id="open-chat" data-i18n="askAssistant">Fråga assistenten <span>↗</span></button>
+        <p class="disclaimer" data-i18n="disclaimer">Svar baseras på webbplatsens tillgängliga innehåll.</p>
+      </div>
+      <div class="road-visual" aria-hidden="true"><div class="sun"></div><div class="land land-a"></div><div class="land land-b"></div><div class="road"><i></i><i></i><i></i></div><div class="barrier"></div></div>
+    </section>
+
+    <section class="solutions" id="solutions">
+      <p class="section-label" data-i18n="explore">UTFORSKA ERBJUDANDET</p>
+      <div class="cards">
+        <article><span>01</span><h2 data-i18n="cardProducts">Produkter</h2><p data-i18n="cardProductsText">Utforska produkter som beskrivs på webbplatsen.</p></article>
+        <article><span>02</span><h2 data-i18n="cardInfrastructure">Organisation</h2><p data-i18n="cardInfrastructureText">Lär känna organisationen bakom webbplatsen.</p></article>
+        <article><span>03</span><h2 data-i18n="cardServices">Tjänster</h2><p data-i18n="cardServicesText">Hitta tjänster och information från webbplatsen.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="chat-launcher" id="launcher" aria-label="Öppna assistenten">
+    <svg class="assistant-avatar" viewBox="0 0 48 48" width="44" height="44" aria-hidden="true" focusable="false">
+      <circle cx="24" cy="24" r="24" fill="var(--lime)"/>
+      <path d="M24 12V8" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="24" cy="7" r="2" fill="var(--green)"/>
+      <rect x="9" y="13" width="30" height="25" rx="10" fill="var(--green)"/>
+      <path d="M6 23v6m36-6v6" stroke="var(--green)" stroke-width="3" stroke-linecap="round"/>
+      <rect x="15" y="21" width="4" height="6" rx="2" fill="var(--lime)"/>
+      <rect x="29" y="21" width="4" height="6" rx="2" fill="var(--lime)"/>
+      <path d="M20 31q4 4 8 0" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <b data-i18n="chatLabel">Fråga oss</b>
+  </button>
+  <aside class="chat" id="chat" aria-label="Website assistant" aria-hidden="true">
+    <header><div><small>WEBSITE KNOWLEDGE</small><h2 data-i18n="assistantTitle">Webbplatsassistent</h2></div><button type="button" id="close-chat" aria-label="Stäng">×</button></header>
+    <div class="messages" id="messages" aria-live="polite" aria-busy="false"></div>
+    <div class="suggestions" id="suggestions"></div>
+    <form class="composer" id="chat-form"><label class="sr-only" for="message">Fråga</label><input id="message" maxlength="500" autocomplete="off"><button aria-label="Skicka">↑</button></form>
+    <footer data-i18n="chatFooter">Svar från godkända offentliga källor · Demo</footer>
+  </aside>
+
+  <aside class="appointment-panel" id="appointment-panel" aria-labelledby="appointment-title" aria-hidden="true">
+    <header><div><small>WEBSITE KNOWLEDGE</small><h2 id="appointment-title" data-i18n="requestAppointment">Begär ett möte</h2></div><button type="button" id="close-appointment" aria-label="Stäng mötespanelen">×</button></header>
+    <div class="appointment-body" id="appointment-body" aria-live="polite" aria-busy="false"></div>
+  </aside>
+
+  <script src="/assets/visitor-client.js?v=20260909-auth"></script>
+  <script src="/assets/app.js?v=20260909-auth"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+/* Original vector avatar: local, decorative, and independent of chat state. */
+.chat-launcher {
+  border-radius: 999px;
+  padding: 8px 20px 8px 8px;
+  min-height: 60px;
+  gap: 12px;
+  border: 1px solid #ffffff26;
+  box-shadow: 0 8px 28px #0b1e1733;
+}
+.assistant-avatar {
+  display: block;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+}
+.chat-launcher b { font-size: 14px; }
+.chat-launcher:hover { background: #21533f; }
+.chat-launcher:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 4px;
+}
+@media (max-width: 800px) {
+  .chat-launcher { right: 12px; bottom: 12px; }
+}
