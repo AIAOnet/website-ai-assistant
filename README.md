@@ -180,3 +180,7 @@ On macOS or Linux, use `.venv/bin/python`. The current suite contains 166 tests 
 ## Proof-of-concept scope
 
 This repository demonstrates the complete local workflow and security boundaries. Production deployment still requires an HTTPS reverse proxy, secure administrator cookies, operational monitoring, backups, provider billing controls, and deployment-specific authentication for private API consumers. Multi-host deployments require networked shared rate limiting and usage accounting instead of SQLite files.
+
+## License
+
+This project is available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You may use, modify, and distribute it for permitted noncommercial purposes. Commercial use requires a separate license from the repository owner.
