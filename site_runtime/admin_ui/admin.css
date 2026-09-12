@@ -17,3 +17,5 @@ nav[aria-label="Admin sections"]{flex-wrap:wrap}
 #sources>details>summary,#rag details>summary{cursor:pointer;font-weight:650}
 @media(max-width:760px){.settings-layout{grid-template-columns:1fr;gap:20px}.settings-menu{position:static;flex-direction:row;flex-wrap:wrap}.settings-menu button{flex:1;text-align:center}.panel{padding:22px}.settings-overview{padding:14px}.settings-section .rag-card{padding:18px}}
 .usage-category{padding:18px 0;border-bottom:1px solid #dce3e7;margin-bottom:20px}.usage-category h4{margin-bottom:6px}
+
+.settings-menu.widget-subtabs{position:static;flex-direction:row;gap:8px;border-bottom:1px solid #dce3e7;padding-bottom:12px;margin:20px 0 24px}.widget-subtabs button{min-width:110px;text-align:center}

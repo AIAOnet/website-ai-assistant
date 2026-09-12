@@ -29,7 +29,7 @@ else{
   try { saved = JSON.parse(sessionStorage.getItem(storageKey) || '{}'); } catch {}
   document.querySelectorAll('.settings-menu').forEach(menu => {
     const buttons = [...menu.querySelectorAll('[data-section]')];
-    const parent = menu.closest('.panel');
+    const navigationKey = menu.dataset.navigationKey || menu.closest('.panel').id;
     const activate = button => {
       buttons.forEach(item => {
         const active = item === button;
@@ -37,7 +37,7 @@ else{
         item.tabIndex = active ? 0 : -1;
         document.getElementById(item.dataset.section).hidden = !active;
       });
-      saved[parent.id] = button.dataset.section;
+      saved[navigationKey] = button.dataset.section;
       try { sessionStorage.setItem(storageKey, JSON.stringify(saved)); } catch {}
     };
     buttons.forEach((button, index) => {
@@ -54,7 +54,7 @@ else{
         if (target) { event.preventDefault(); target.focus(); activate(target); }
       });
     });
-    activate(buttons.find(button => button.dataset.section === saved[parent.id]) || buttons[0]);
+    activate(buttons.find(button => button.dataset.section === saved[navigationKey]) || buttons[0]);
   });
   document.querySelectorAll('[data-status-source]').forEach(summary => {
     const source = document.getElementById(summary.dataset.statusSource);
