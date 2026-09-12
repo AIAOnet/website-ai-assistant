@@ -21,3 +21,45 @@ else{
   const tabs=[...document.querySelectorAll("[data-tab]")],tablist=document.querySelector("nav[aria-label='Admin sections']");tablist.setAttribute("role","tablist");
   tabs.forEach((button,index)=>{const panel=document.getElementById(button.dataset.tab);button.id="tab-"+button.dataset.tab;button.setAttribute("role","tab");button.setAttribute("aria-controls",panel.id);button.setAttribute("aria-selected",String(index===0));button.tabIndex=index? -1:0;panel.setAttribute("role","tabpanel");panel.setAttribute("aria-labelledby",button.id);button.addEventListener("click",()=>{tabs.forEach(item=>{const active=item===button;item.setAttribute("aria-pressed",String(active));item.setAttribute("aria-selected",String(active));item.tabIndex=active?0:-1});document.querySelectorAll(".panel").forEach(item=>item.hidden=item.id!==button.dataset.tab)});button.addEventListener("keydown",event=>{let target;if(event.key==="ArrowRight")target=tabs[(index+1)%tabs.length];else if(event.key==="ArrowLeft")target=tabs[(index-1+tabs.length)%tabs.length];else if(event.key==="Home")target=tabs[0];else if(event.key==="End")target=tabs[tabs.length-1];if(target){event.preventDefault();target.focus();target.click()}})});
 }
+
+// Independent section navigation within the integration and AI settings tabs.
+(() => {
+  const storageKey = 'admin-settings-location';
+  let saved = {};
+  try { saved = JSON.parse(sessionStorage.getItem(storageKey) || '{}'); } catch {}
+  document.querySelectorAll('.settings-menu').forEach(menu => {
+    const buttons = [...menu.querySelectorAll('[data-section]')];
+    const parent = menu.closest('.panel');
+    const activate = button => {
+      buttons.forEach(item => {
+        const active = item === button;
+        item.setAttribute('aria-selected', String(active));
+        item.tabIndex = active ? 0 : -1;
+        document.getElementById(item.dataset.section).hidden = !active;
+      });
+      saved[parent.id] = button.dataset.section;
+      try { sessionStorage.setItem(storageKey, JSON.stringify(saved)); } catch {}
+    };
+    buttons.forEach((button, index) => {
+      const section = document.getElementById(button.dataset.section);
+      section.setAttribute('role', 'tabpanel');
+      section.setAttribute('aria-labelledby', button.id);
+      button.addEventListener('click', () => activate(button));
+      button.addEventListener('keydown', event => {
+        let target;
+        if (['ArrowDown', 'ArrowRight'].includes(event.key)) target = buttons[(index + 1) % buttons.length];
+        if (['ArrowUp', 'ArrowLeft'].includes(event.key)) target = buttons[(index - 1 + buttons.length) % buttons.length];
+        if (event.key === 'Home') target = buttons[0];
+        if (event.key === 'End') target = buttons[buttons.length - 1];
+        if (target) { event.preventDefault(); target.focus(); activate(target); }
+      });
+    });
+    activate(buttons.find(button => button.dataset.section === saved[parent.id]) || buttons[0]);
+  });
+  document.querySelectorAll('[data-status-source]').forEach(summary => {
+    const source = document.getElementById(summary.dataset.statusSource);
+    const update = () => { summary.textContent = source.textContent; };
+    new MutationObserver(update).observe(source, {childList: true, characterData: true, subtree: true});
+    update();
+  });
+})();

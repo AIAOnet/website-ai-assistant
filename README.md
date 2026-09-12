@@ -74,7 +74,7 @@ Copy the generated value into `WEBSITE_ASSISTANT_ADMIN_PASSWORD_HASH` in `.env`.
 ## Build website knowledge
 
 1. Sign in at `/admin`.
-2. Open **Website Integration**.
+2. Open **Knowledge Sources → Import website**.
 3. Enter a public homepage URL and start the knowledge build.
 4. Review the discovery report, extracted sources, and ontology.
 5. Ask questions in the built-in assistant or install the generated widget.
@@ -87,7 +87,7 @@ The crawler supports public server-rendered HTML. It does not render JavaScript-
 
 Generation and embeddings are optional. Without them, the assistant uses cited source excerpts and lexical retrieval.
 
-Configure providers in **Admin → Configuration**, or set the corresponding placeholders in `.env`:
+Configure providers in **Admin â†’ AI Settings**, or set the corresponding placeholders in `.env`:
 
 ```dotenv
 WEBSITE_ASSISTANT_AI_API_ENDPOINT=https://provider.example/v1/chat/completions
@@ -103,7 +103,7 @@ Use the connection tests before rebuilding embeddings. AI usage limits are confi
 
 ## Embed the public widget
 
-In **Admin → Website Integration**, add each exact allowed website origin and copy the generated widget snippet. The widget requests a short-lived visitor token and never contains the private API token.
+In **Admin â†’ Website & Integrations**, add each exact allowed website origin and copy the generated widget snippet. The widget requests a short-lived visitor token and never contains the private API token.
 
 For a local cross-origin test, keep the assistant on port 8001, allow `http://127.0.0.1:8002`, and run:
 
@@ -115,7 +115,7 @@ Then open http://127.0.0.1:8002. Public widgets are anonymous by design. Origin 
 
 ## Use the private API
 
-Open **Admin → Configuration → Assistant API access**, generate a private API token, and copy it when displayed. Only its hash is stored. Rotation immediately invalidates the previous token.
+Open **Admin â†’ Website & Integrations â†’ Private API**, generate a private API token, and copy it when displayed. Only its hash is stored. Rotation immediately invalidates the previous token.
 
 ```http
 POST /api/chat HTTP/1.1

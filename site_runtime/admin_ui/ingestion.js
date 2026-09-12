@@ -41,6 +41,6 @@
  }
  form.onsubmit=async event=>{event.preventDefault();try{await api('ingestion',{method:'POST',body:JSON.stringify({homepage:form.homepage.value,limits:{max_pages:Number(form.pages.value),max_depth:Number(form.depth.value)}})});await refresh();}catch(error){problem(error);}};
  document.querySelector('#homepage-build-refresh').onclick=()=>refresh().catch(problem);
- document.querySelector('[data-tab=website]').addEventListener('click',()=>refresh().catch(problem));
+ document.querySelector('[data-tab=sources]').addEventListener('click',()=>refresh().catch(problem));
  refresh().catch(problem);
 })();

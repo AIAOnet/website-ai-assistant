@@ -75,15 +75,16 @@
     get("website-status").textContent=`Active backend address: ${data.effective_api_base_url} · ${data.settings.allowed_origins.length} additional website origins allowed.`;
     get("website-test").disabled=false;get("website-copy").disabled=false;
     get("website-settings").querySelector("fieldset").disabled=false;
+    get("website-connection-settings").querySelector("fieldset").disabled=false;
   }
-  get("website-settings").addEventListener("submit",async event=>{
+  ["website-settings","website-connection-settings"].forEach(id=>get(id).addEventListener("submit",async event=>{
     event.preventDefault();error.textContent="";const button=event.currentTarget.querySelector("button");button.disabled=true;
     try{
-      await api("website",{method:"PUT",body:JSON.stringify({api_base_url:get("website-base").value.trim(),allowed_origins:get("website-origins").value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean)})});
+      await api("website",{method:"PUT",body:JSON.stringify({api_base_url:id==="website-connection-settings"?get("website-base").value.trim():connection.settings.api_base_url,allowed_origins:id==="website-settings"?get("website-origins").value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean):connection.settings.allowed_origins})});
       // Reload to apply the CSP connect-src allowlist for the saved test target.
       sessionStorage.setItem("website-settings-saved","true");location.reload();
     }catch(problem){error.textContent=problem.message;button.disabled=false}
-  });
+  }));
   get("website-test").addEventListener("click",async()=>{
     const button=get("website-test"),status=get("website-test-status");button.disabled=true;status.textContent="Testing saved connection…";
     const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);

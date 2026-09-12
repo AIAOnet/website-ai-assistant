@@ -87,7 +87,7 @@ class RuntimeTests(unittest.TestCase):
         for selector in ('site-header','hero-copy','road-visual','chat-launcher','appointment-panel'):
             self.assertIn(selector,index)
         admin=(root/'site_runtime/admin_ui/index.html').read_text(encoding='utf-8')
-        for section in ('Website Integration','Configuration','Knowledge Sources','Ontology','Evaluations','Calendar','Logs','homepage-build'):
+        for section in ('Website &amp; Integrations','AI Settings','Knowledge Sources','Ontology','Evaluations','Calendar','Logs','homepage-build'):
             self.assertIn(section,admin)
         for base in (root/'site_runtime',root/'web'):
             for path in base.rglob('*'):
