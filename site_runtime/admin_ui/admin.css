@@ -19,3 +19,4 @@ nav[aria-label="Admin sections"]{flex-wrap:wrap}
 .usage-category{padding:18px 0;border-bottom:1px solid #dce3e7;margin-bottom:20px}.usage-category h4{margin-bottom:6px}
 
 .settings-menu.widget-subtabs{position:static;flex-direction:row;gap:8px;border-bottom:1px solid #dce3e7;padding-bottom:12px;margin:20px 0 24px}.widget-subtabs button{min-width:110px;text-align:center}
+@media(max-width:420px){header{padding:16px 14px;gap:12px}.brand{font-size:18px}.identity{font-size:12px;max-width:48%;overflow-wrap:anywhere}.identity .secondary{min-height:44px}.login-page{padding:16px}.login-card{padding:26px 20px}.login-card input{font-size:16px}}

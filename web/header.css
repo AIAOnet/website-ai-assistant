@@ -8,3 +8,26 @@
   .header-actions { gap: 10px; }
   .admin-link { padding: 8px 10px; }
 }
+/* Responsive public page and overlays. */
+.site-header{height:auto;min-height:76px;flex-wrap:wrap;gap:16px;padding-block:14px}
+.site-header nav{flex-wrap:wrap;gap:16px}.site-header .header-actions{flex-wrap:wrap;gap:12px}
+.language button,.admin-link{min-height:44px;min-width:44px}
+.hero-copy,.cards article,.header-actions{min-width:0}.lead,.cards p,.message,.sources a{overflow-wrap:anywhere}
+.chat,.appointment-panel{max-height:calc(100dvh - 32px);bottom:max(16px,env(safe-area-inset-bottom));right:max(16px,env(safe-area-inset-right))}
+.messages,.appointment-body{min-height:0;overscroll-behavior:contain}.chat>header,.chat .composer,.chat footer,.appointment-panel>header{flex-shrink:0}
+.composer{gap:8px}.composer input{min-width:0;font-size:16px}.composer button{flex:0 0 44px;width:44px;height:44px}
+.chat header button,.appointment-panel header button,.dialog-close{min-width:44px;min-height:44px}
+.chat-launcher{bottom:max(16px,env(safe-area-inset-bottom));right:max(16px,env(safe-area-inset-right))}
+.appointment-form input,dialog input,dialog select{font-size:16px}.appointment-form .consent input,dialog .confirm input{min-height:20px;flex:0 0 20px;width:20px;height:20px}
+dialog{max-height:90dvh;overflow:auto}.suggestions button,.slot-list button{min-height:44px}
+@media(max-width:800px){.site-header nav{display:flex;order:3;width:100%;margin-left:0}.hero-copy{padding:48px 6vw 36px}.hero h1{font-size:clamp(36px,8vw,60px)}.lead{font-size:17px}.chat,.appointment-panel{height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);right:12px;bottom:12px}}
+@media(max-width:480px){
+ .site-header{padding:12px 16px;gap:10px}.header-actions{gap:6px!important}.site-header nav{gap:18px}.site-header nav a{font-size:12px;padding-block:8px}
+ .hero h1{letter-spacing:-1.5px}.road-visual{min-height:240px}.solutions{padding:36px 20px 100px}.cards article{padding:22px}.cards h2{margin-top:24px}
+ .chat,.appointment-panel{right:0;bottom:0;width:100%;height:100dvh;max-height:100dvh;box-shadow:none;padding-bottom:env(safe-area-inset-bottom)}
+ .chat>header,.appointment-panel>header{padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top))}.messages,.appointment-body{padding:14px}.message{max-width:94%}
+ .suggestions{padding-inline:14px;flex-shrink:0}.chat footer{font-size:11px}.composer{padding:10px 12px}.appointment-panel h2{font-size:20px}.form-actions>*{flex:1}
+ dialog form{padding:26px 18px}.primary{max-width:100%;line-height:1.4}.primary span{margin-left:12px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media(max-width:480px){body:has(.chat.open),body:has(.appointment-panel.open){overflow:hidden}}

@@ -1,1 +1,30 @@
 #website textarea{width:100%;font:inherit;line-height:1.5;padding:12px;border:1px solid #bccad3;border-radius:6px;resize:vertical}#website-code{font-family:Consolas,monospace;font-size:12px;background:#f5f7f8}#website-warning{color:#a32b28}#website-warning:empty{display:none}#website ol{padding-left:22px;line-height:1.7}#website-status,#website-test-status,#website-copy-status{font-size:13px;line-height:1.6}nav{flex-wrap:wrap}nav button{white-space:nowrap}@media(max-width:600px){nav button{flex:0 1 auto}}
+/* Shared controls stay within their cards at every screen size. */
+.panel,.panel section,.panel article,.rag-heading>div{min-width:0}
+.panel :is(input,select,textarea){max-width:100%;font-size:16px}
+.panel textarea{display:block;width:100%;min-height:120px;padding:12px;border:1px solid #bccad3;border-radius:6px;font-family:inherit;line-height:1.5;resize:vertical}
+.panel :is(p,dd,code,h2,h3,h4,label){overflow-wrap:anywhere}
+.panel fieldset{min-width:0}.panel button{max-width:100%;white-space:normal;line-height:1.4}
+.panel :is(button,summary),.settings-menu button{min-height:44px}
+.panel summary{padding-block:10px;cursor:pointer}
+.panel input[type=checkbox]{flex:0 0 20px;width:20px;height:20px;min-height:20px;margin:0}
+.check-label{align-items:flex-start}.model-configuration-list{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,2fr);gap:10px 18px}
+.model-configuration-list dd{margin:0}.panel pre{max-width:100%;overflow:auto}
+#private-api-example,#website-code{font-family:Consolas,monospace;font-size:13px;line-height:1.6;max-height:55dvh;overflow:auto;background:#f5f7f8}
+#private-api-copy,#private-api-example-copy{margin-top:12px}
+nav[aria-label="Admin sections"]{gap:6px}
+@media(min-width:1440px){.workspace{max-width:1320px}.settings-layout{grid-template-columns:200px minmax(0,1fr);gap:36px}}
+@media(max-width:1000px){.settings-layout{grid-template-columns:1fr}.settings-menu{position:static;flex-direction:row;flex-wrap:wrap}.settings-menu button{flex:1;text-align:center}.calendar-toolbar{flex-wrap:wrap}.calendar-filter{min-width:0}}
+@media(max-width:600px){
+  .workspace{padding:26px 12px}.workspace>h1{font-size:30px}.workspace>.muted{margin-bottom:20px}
+  nav[aria-label="Admin sections"]{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-padding-inline:8px;padding:6px 4px 12px;margin:20px 0;max-width:100%}
+  nav[aria-label="Admin sections"] button{flex:0 0 auto;min-width:0;white-space:nowrap;padding:12px 14px;font-size:14px}
+  .panel{padding:18px 14px;border-radius:10px}.panel h2{font-size:24px}.panel .rag-card{padding:16px 12px;margin-top:16px}
+  .settings-layout{gap:18px;margin-top:20px}.settings-overview{padding:12px;margin:18px 0;gap:8px}.settings-overview p{flex-basis:100%}
+  .settings-menu.widget-subtabs{gap:6px;margin:16px 0}.widget-subtabs button{min-width:0;flex:1;padding:12px 8px}
+  .notice{padding:12px 14px;margin-top:18px}.model-configuration-list{grid-template-columns:1fr;gap:5px}.model-configuration-list dd{margin-bottom:10px}
+  .rag-heading{gap:12px}.rag-heading>button{width:100%}.ontology-actions,.regex-actions{gap:8px}.ontology-actions button,.regex-actions button{flex:1 1 120px}
+  .rag-card>button,.rag-card>fieldset>button,.rag-card form>fieldset>button{width:100%}
+  .calendar-panel{padding:0}.calendar-title,.calendar-toolbar{gap:14px}.calendar-provider{max-width:100%;flex-wrap:wrap}
+  #sources-preview form{padding:18px}.panel dialog{max-height:90dvh;overflow:auto}
+}
