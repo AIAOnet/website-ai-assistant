@@ -25,5 +25,3 @@ def initialize(data):
             if current != data.resolve():
                 raise ValueError('Active website files are missing')
             atomic_json(path,value)
-    path=data/'evaluation_cases.json'
-    if not path.exists():atomic_json(path,{'version':'empty','cases':[]})

@@ -12,7 +12,7 @@
     return null;
   }
   function controls(){
-    byId("ontology-add").disabled=!report||editing||busy;
+    byId("ontology-add").disabled=!report||!report.sources.length||editing||busy;
     byId("ontology-refresh").disabled=editing||busy;
     byId("ontology-editor").querySelector("fieldset").disabled=busy;
     byId("ontology-results").querySelectorAll("button").forEach(button=>button.disabled=editing||busy);
@@ -30,7 +30,7 @@
     byId("ontology-confirm").checked=false;controls();
   }
   function openEditor(action,row=null){
-    if(!report||busy||editing)return;
+    if(!report||busy||editing||(action!=="delete"&&!report.sources.length))return;
     operation=action;selectedRow=row;editing=true;error.textContent="";
     const deleting=action==="delete",values=row||{};
     byId("ontology-editor-title").textContent=deleting?"Remove relationship #"+row.row:action==="update"?"Edit relationship #"+row.row:"Add relationship";
@@ -66,6 +66,7 @@
   }
   function applyReport(data,message=""){
     report=data;
+    byId("ontology-no-sources").hidden=report.sources.length>0;
     const invalid=report.relationships.filter(r=>r.issues.length).length;
     byId("ontology-status").textContent=(message?message+" · ":"")+"Version "+(report.version||"unknown")+" · "+report.entities.length+" entities · "+report.relationships.length+" relationships · "+report.aliases.length+" aliases · "+invalid+" relationship rows with issues";
     byId("ontology-warning").textContent=report.issues.join(" ");
@@ -88,6 +89,15 @@
     try{applyReport(await api("ontology/relationships",{method:"POST",body:JSON.stringify(payload)}),operation==="delete"?"Relationship removed; previous snapshot saved":"Relationship saved; previous snapshot saved");closeEditor();document.dispatchEvent(new CustomEvent("ontology-updated"))}
     catch(problem){error.textContent=problem.message}
     finally{busy=false;controls()}
+  });
+  byId("ontology-import-website").addEventListener("click",()=>{
+    document.querySelector('[data-tab="sources"]').click();
+    byId("homepage-build").closest("details").open=true;
+    byId("homepage-url").focus();
+  });
+  byId("ontology-open-sources").addEventListener("click",()=>{
+    document.querySelector('[data-tab="sources"]').click();
+    byId("sources-add").focus();
   });
   byId("ontology-add").addEventListener("click",()=>openEditor("add"));
   byId("ontology-cancel").addEventListener("click",()=>{closeEditor();byId("ontology-add").focus()});

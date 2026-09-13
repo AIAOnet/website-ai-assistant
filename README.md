@@ -184,3 +184,9 @@ This repository demonstrates the complete local workflow and security boundaries
 ## License
 
 This project is available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You may use, modify, and distribute it for permitted noncommercial purposes. Commercial use requires a separate license from the repository owner.
+
+## Evaluation tests
+
+Open **Admin → Evaluations → Add test** to create a question and its expected results. Choose retrieval, full answer, or tool-response mode, then save. Tests can be edited, enabled/disabled, or deleted in the same UI. Saving does not execute a test; use **Run one test** or a suite action to execute enabled tests.
+
+Definitions are stored in `evaluations.db` in the active runtime data folder. Existing `evaluation_cases.json` definitions are imported once on first database initialization; subsequent JSON edits are not used. Run results remain transient. Editor and administrator roles can manage definitions; viewers have read-only access. Concurrent edits are rejected and must be refreshed before retrying.

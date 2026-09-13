@@ -23,6 +23,7 @@ from .source_admin import SourceAdmin
 from .website import WebsiteConnection, public_website_cors
 from .diagnostics import DiagnosticStore, traced_chat
 from .evaluation_runner import EvaluationCoordinator, EvaluationRunner
+from .evaluation_store import EvaluationStore
 from .provider_probe import ProviderProbe
 from .provider_settings import ProviderConfigurationStore
 from .security_audit import SecurityAuditStore
@@ -66,8 +67,9 @@ app.state.website = WebsiteConnection(DATA)
 app.state.diagnostics = DiagnosticStore(DATA / "diagnostics.db")
 app.state.security_audit = SecurityAuditStore(
     Path(setting("WEBSITE_ASSISTANT_SECURITY_AUDIT_DB", DATA / "security_audit.db")))
+app.state.evaluation_store = EvaluationStore(DATA / "evaluations.db", DATA / "evaluation_cases.json")
 app.state.evaluations = EvaluationCoordinator(
-    EvaluationRunner(service, DATA / "evaluation_cases.json")
+    EvaluationRunner(service, app.state.evaluation_store.load()), store=app.state.evaluation_store
 )
 app.state.provider_probe = ProviderProbe(service)
 app.state.provider_configuration = provider_configuration

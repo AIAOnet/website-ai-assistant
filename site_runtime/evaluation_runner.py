@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import copy
 from pathlib import Path
 from time import perf_counter
 from typing import Callable
@@ -119,7 +120,12 @@ class EvaluationRunner:
                 "source_ids": [record["source_id"] for record in retrieval["records"]],
             }
 
-        response = await self.service.respond_async(conversation_id, case.question, case.language)
+        request_service = self.service
+        if case.execution_mode == "deterministic":
+            request_service = copy.copy(self.service)
+            request_service.provider = None
+            request_service.intent_classifier_enabled = False
+        response = await request_service.respond_async(conversation_id, case.question, case.language)
         contact = response.get("contact") or {}
         return {
             "intent": response.get("intent"),
@@ -195,16 +201,29 @@ class EvaluationRunner:
 class EvaluationCoordinator:
     """Expose bounded metadata and serialize duplicate case executions."""
 
-    def __init__(self, runner: EvaluationRunner, *, suite_timeout_seconds: float = 300.0) -> None:
+    def __init__(self, runner: EvaluationRunner, *, suite_timeout_seconds: float = 300.0, store=None) -> None:
         if not 1 <= suite_timeout_seconds <= 300:
             raise ValueError("Suite timeout must be between 1 and 300 seconds")
+        self.store = store
         self.runner = runner
         self.suite_timeout_seconds = suite_timeout_seconds
         self._active: set[str] = set()
         self._suite_active = False
         self._lock = asyncio.Lock()
 
+    def refresh_definitions(self):
+        if self.store is not None and not self._active and not self._suite_active:
+            self.runner.suite = self.store.load()
+
+    async def change(self, payload):
+        async with self._lock:
+            if self._active or self._suite_active:
+                raise EvaluationAlreadyRunning("Wait for running evaluations to finish before editing tests")
+            self.runner.suite = self.store.change(payload)
+            return self.runner.suite
+
     def status(self) -> dict:
+        self.refresh_definitions()
         return {
             "suite_version": self.runner.suite.version,
             "assistant_configured": self.runner.service.status()["configured"],
@@ -219,6 +238,7 @@ class EvaluationCoordinator:
 
     async def run_case(self, case_id: str) -> dict:
         async with self._lock:
+            self.refresh_definitions()
             if case_id in self._active:
                 raise EvaluationAlreadyRunning("The evaluation case is already running")
             self._active.add(case_id)
@@ -229,11 +249,13 @@ class EvaluationCoordinator:
                 self._active.discard(case_id)
 
     async def run_non_llm_suite(self) -> dict:
+        self.refresh_definitions()
         cases = [case for case in self.runner.suite.cases
                  if case.enabled and case.execution_mode in {"retrieval", "deterministic"}]
         return await self._run_suite(cases, "non_llm", require_zero_model_calls=True)
 
     async def run_full_suite(self, expected_case_count: int) -> dict:
+        self.refresh_definitions()
         cases = [case for case in self.runner.suite.cases
                  if case.enabled and case.execution_mode == "full"]
         if expected_case_count != len(cases):

@@ -20,6 +20,7 @@ from .source_admin import (DocumentArchiveRequest, DocumentReindexRequest, Sourc
 
 from .admin_auth import AdminAuth, COOKIE
 from .diagnostics import ADMIN_ACTIONS, append_safely
+from .evaluation_store import EvaluationChange, EvaluationConflict
 from .evaluation_runner import EvaluationAlreadyRunning, EvaluationCaseNotFound, EvaluationSuiteChanged
 from .provider_probe import ProviderProbeBusy
 from .provider_settings import GenerationProviderChange
@@ -488,6 +489,24 @@ class EmbeddingRebuildRequest(BaseModel):
     confirmed_external_embedding_calls: Literal[True]
     expected_model: str = Field(min_length=1, max_length=200)
     expected_chunk_count: int = Field(ge=1, le=3000)
+
+
+@router.get("/api/admin/evaluations/manage")
+async def evaluation_manage(request: Request):
+    suite = request.app.state.evaluation_store.load()
+    return {"revision": int(suite.version), "cases": [case.model_dump() for case in suite.cases]}
+
+
+@router.post("/api/admin/evaluations/manage")
+async def evaluation_change(payload: EvaluationChange, request: Request):
+    try:
+        suite = await request.app.state.evaluations.change(payload)
+    except (EvaluationConflict, EvaluationAlreadyRunning) as problem:
+        return JSONResponse({"detail": str(problem)}, 409)
+    except ValueError as problem:
+        return JSONResponse({"detail": str(problem)}, 422)
+    request.state.admin_diagnostic_fields = {"case_id": payload.case_id}
+    return {"revision": int(suite.version), "cases": [case.model_dump() for case in suite.cases]}
 
 
 @router.get("/api/admin/evaluations/cases")

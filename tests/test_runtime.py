@@ -96,6 +96,26 @@ class RuntimeTests(unittest.TestCase):
                     self.assertNotIn('saferoad',text,str(path))
                     self.assertNotIn('www.website.com',text,str(path))
 
+    def test_admin_loads_alias_editor_script(self):
+        from html.parser import HTMLParser
+
+        class Scripts(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.sources = []
+
+            def handle_starttag(self, tag, attrs):
+                if tag == 'script':
+                    self.sources.append(dict(attrs).get('src'))
+
+        root = Path(__file__).resolve().parents[1]
+        parser = Scripts()
+        parser.feed((root / 'site_runtime/admin_ui/index.html').read_text(encoding='utf-8'))
+        alias_script = '/admin/assets/ontology-aliases.js'
+        self.assertEqual(parser.sources.count(alias_script), 1)
+        self.assertLess(parser.sources.index('/admin/assets/admin.js'), parser.sources.index(alias_script))
+        self.assertTrue((root / 'site_runtime/admin_ui/ontology-aliases.js').is_file())
+
     def test_configuration_ignores_ambient_provider_keys(self):
         with patch.dict(os.environ,{'WEBSITE_ASSISTANT_AI_API_KEY':'unexpected'}):
             self.assertEqual(configuration.setting('WEBSITE_ASSISTANT_AI_API_KEY',''),'')

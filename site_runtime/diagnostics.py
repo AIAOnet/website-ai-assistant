@@ -28,6 +28,7 @@ REASONS = frozenset({"invalid_evidence", "no_evidence", "safety_sensitive_questi
     "unsupported_number", "unsupported_claim", "missing_citation", "invalid_answer",
     "unsafe_format", "tool_or_safety_claim"})
 ADMIN_ACTIONS = {
+    ("POST", "/api/admin/evaluations/manage"): "evaluation.case.change",
     ("POST", "/api/admin/api-access"): "api_access.update",
     ("PUT", "/api/admin/website"): "website.save",
     ("PUT", "/api/admin/rag/settings"): "rag.settings.save",
