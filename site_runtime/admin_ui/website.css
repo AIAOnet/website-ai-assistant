@@ -28,3 +28,4 @@ nav[aria-label="Admin sections"]{gap:6px}
   .calendar-panel{padding:0}.calendar-title,.calendar-toolbar{gap:14px}.calendar-provider{max-width:100%;flex-wrap:wrap}
   #sources-preview form{padding:18px}.panel dialog{max-height:90dvh;overflow:auto}
 }
+.logs-subtabs{overflow-x:auto;overscroll-behavior-x:contain}.logs-subtabs button{flex:1 0 auto}

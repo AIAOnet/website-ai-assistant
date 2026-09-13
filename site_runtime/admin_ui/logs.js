@@ -2,22 +2,22 @@
 (() => {
   const byId = id => document.getElementById(id);
   const node = (tag, text) => { const el = document.createElement(tag); el.textContent = text; return el; };
-  const audit=node("section","");audit.id="security-audit";audit.className="rag-card";audit.hidden=true;
+  const audit=node("section","");audit.id="security-audit";audit.className="rag-card";
   const traffic=node("section","");traffic.id="traffic-metrics";traffic.className="rag-card";
   const trafficHeading=node("div","");trafficHeading.className="rag-heading";const trafficTitle=node("div","");trafficTitle.append(node("h3","Traffic protection"),node("p","Aggregate public API activity since this application instance started."));
   const trafficButton=node("button","Refresh traffic metrics");trafficButton.id="traffic-metrics-refresh";trafficButton.type="button";trafficButton.className="secondary";trafficHeading.append(trafficTitle,trafficButton);
-  const trafficStatus=node("p","Open Logs and refresh to inspect public API protection.");trafficStatus.id="traffic-metrics-status";trafficStatus.setAttribute("role","status");traffic.append(trafficHeading,node("p","Counts contain no messages, form values, conversation IDs, IP addresses, cookies, or credentials."),trafficStatus);byId("logs").append(traffic);
+  const trafficStatus=node("p","Open this subtab to inspect public API protection.");trafficStatus.id="traffic-metrics-status";trafficStatus.setAttribute("role","status");traffic.append(trafficHeading,node("p","Counts contain no messages, form values, conversation IDs, IP addresses, cookies, or credentials."),trafficStatus);byId("logs-traffic").append(traffic);
   const monitoring=node("section","");monitoring.id="monitoring";monitoring.className="rag-card";monitoring.append(node("h3","Local monitoring"),node("p","Health thresholds use only bounded aggregate diagnostics. Alerts stay local; no external delivery is configured."));
-  const monitoringStatus=node("p","Open Logs to evaluate health.");monitoringStatus.id="monitoring-status";monitoringStatus.setAttribute("role","status");
+  const monitoringStatus=node("p","Open this subtab to evaluate health.");monitoringStatus.id="monitoring-status";monitoringStatus.setAttribute("role","status");
   const monitoringForm=node("form","");monitoringForm.id="monitoring-thresholds";const fields=document.createElement("fieldset");fields.disabled=true;
   const settings=[["fallback","Fallback rate (%)",30,60,100],["provider","Provider failures",3,10,10000],["api","API errors",10,30,100000],["limited","Rate-limit rejections",10,30,100000]];
   settings.forEach(([key,label,warning,critical,maximum])=>{const row=node("div","");row.className="regex-row";[["warning","Warning",warning],["critical","Critical",critical]].forEach(([level,text,value])=>{const wrap=node("div","");const id=`monitoring-${key}-${level}`;const caption=document.createElement("label");caption.htmlFor=id;caption.textContent=`${label} · ${text}`;const input=document.createElement("input");input.id=id;input.type="number";input.min="1";input.max=String(maximum);input.value=String(value);input.required=true;wrap.append(caption,input);row.append(wrap)});fields.append(row)});
-  const confirmation=document.createElement("label");confirmation.className="check-label";const check=document.createElement("input");check.type="checkbox";check.id="monitoring-confirm";confirmation.append(check,document.createTextNode(" I confirm replacing the local health thresholds."));const save=node("button","Save monitoring thresholds");save.type="submit";save.disabled=true;fields.append(confirmation,save);monitoringForm.append(fields);const alerts=node("div","");alerts.id="monitoring-alerts";alerts.setAttribute("aria-live","polite");monitoring.append(monitoringStatus,monitoringForm,alerts);byId("logs").append(monitoring);
+  const confirmation=document.createElement("label");confirmation.className="check-label";const check=document.createElement("input");check.type="checkbox";check.id="monitoring-confirm";confirmation.append(check,document.createTextNode(" I confirm replacing the local health thresholds."));const save=node("button","Save monitoring thresholds");save.type="submit";save.disabled=true;fields.append(confirmation,save);monitoringForm.append(fields);const alerts=node("div","");alerts.id="monitoring-alerts";alerts.setAttribute("aria-live","polite");monitoring.append(monitoringStatus,monitoringForm,alerts);byId("logs-monitoring").append(monitoring);
   const heading=node("div","");heading.className="rag-heading";const title=node("div","");title.append(node("h3","Security audit"),node("p","Attributable administrator activity with bounded retention and tamper-evident sequencing."));
   const auditButton=node("button","Refresh security audit");auditButton.id="security-audit-refresh";auditButton.type="button";auditButton.className="secondary";heading.append(title,auditButton);
   const notice=node("p","Administrator role required. Credentials, cookies, CSRF values, API keys, prompts, answers and document content are never recorded.");notice.className="notice";
-  const auditStatus=node("p","Open Logs and refresh to inspect the security audit.");auditStatus.id="security-audit-status";auditStatus.setAttribute("role","status");
-  const auditResults=node("div","");auditResults.id="security-audit-results";auditResults.setAttribute("aria-live","polite");audit.append(heading,notice,auditStatus,auditResults);byId("logs").append(audit);
+  const auditStatus=node("p","Open this subtab to inspect the security audit.");auditStatus.id="security-audit-status";auditStatus.setAttribute("role","status");
+  const auditResults=node("div","");auditResults.id="security-audit-results";auditResults.setAttribute("aria-live","polite");audit.append(heading,notice,auditStatus,auditResults);byId("logs-security").append(audit);
   async function refresh() {
     const button = byId("logs-refresh");
     button.disabled = true;
@@ -96,5 +96,18 @@
   byId("traffic-metrics-refresh").addEventListener("click", refreshTraffic);
   byId("logs-kind").addEventListener("change", refresh);
   byId("monitoring-confirm").addEventListener("change",event=>{save.disabled=!event.target.checked});monitoringForm.addEventListener("submit",async event=>{event.preventDefault();if(!check.checked)return;save.disabled=true;try{renderMonitoring(await api("monitoring",{method:"PUT",body:JSON.stringify(monitoringPayload())}));check.checked=false}catch(problem){byId("monitoring-status").textContent=problem.message}finally{save.disabled=!check.checked}});
-  document.querySelector('[data-tab="logs"]').addEventListener("click",()=>{refresh();refreshTraffic();refreshMonitoring()});
+  const loadedSections=new Set();
+  function loadSection(sectionId){
+    if(loadedSections.has(sectionId))return;
+    loadedSections.add(sectionId);
+    if(sectionId==="logs-events")refresh();
+    else if(sectionId==="logs-traffic")refreshTraffic();
+    else if(sectionId==="logs-monitoring")refreshMonitoring();
+    else if(sectionId==="logs-security")refreshAudit();
+  }
+  document.querySelectorAll('.logs-subtabs [data-section]').forEach(button=>button.addEventListener("click",()=>loadSection(button.dataset.section)));
+  document.querySelector('[data-tab="logs"]').addEventListener("click",()=>{
+    const selected=document.querySelector('.logs-subtabs [aria-selected="true"]');
+    loadSection(selected?.dataset.section||"logs-events");
+  });
 })();
